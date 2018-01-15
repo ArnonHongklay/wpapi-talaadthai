@@ -27,7 +27,7 @@ if (!function_exists('is_plugin_active')) {
 }
 
 add_action('rest_api_init', 'run_wp_api_tlt');
-require plugin_dir_path(__FILE__) . '/lib/endpoints/class-wp-api-tlt-controller.php';
+require plugin_dir_path(__FILE__) . '/includes/endpoints/class-wp-api-tlt-controller.php';
 
 function run_wp_api_tlt()
 {
