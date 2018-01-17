@@ -34,5 +34,3 @@ function run_wp_api_tlt()
     $plugin = new wp_api_tlt();
     $plugin->register_routes();
 }
-
-// run_wp_api_tlt();
