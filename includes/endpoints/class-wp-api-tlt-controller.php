@@ -19,38 +19,32 @@ class wp_api_tlt extends WP_REST_Controller
 
     public function get_markets_data()
     {
-        $q = new WP_Query(array(
-            'post_status' => 'publish',
-            'meta_query' => array(
-                'popular_clause' => array(
-                    'key' => 'popular',
-                    'value' => '1',
-                )
-            ),
-            'orderby' => array(
-                'popular_clause' => 'ASC'
-            ),
-        ));
+        $args = array(
+          'post_type' => 'product',
+          'post_status' => 'publish',
+          'meta_query' => array(
+            array(
+                'key' => 'Popular',
+                'value' => '1',
+                'compare' => '='
+            )
+          )
+        );
 
-        return $this->respone_message('ok', $q, 200);
+        return $this->respone_message('ok', $this->combined_data($args), 200);
     }
 
     public function get_products_data()
     {
-        $q = new WP_Query(array(
+        $args = array(
+            'post_type' => 'product',
             'post_status' => 'publish',
-            'meta_query' => array(
-                'popular_clause' => array(
-                    'key' => 'popular',
-                    'value' => '1',
-                )
-            ),
             'orderby' => array(
                 'popular_clause' => 'ASC'
             ),
-        ));
+        );
 
-        return $this->respone_message('ok', $q, 200);
+        return $this->respone_message('ok', $this->combined_data($args), 200);
     }
 
     public function respone_message($code, $message, $status)
@@ -62,5 +56,20 @@ class wp_api_tlt extends WP_REST_Controller
             'status' => $status,
           ),
         );
+    }
+
+    public function combined_data($args)
+    {
+        $posts = get_posts($args);
+        $result = $posts;
+
+        foreach ($posts as $p_key => $p_value) {
+            $meta_posts = get_post_meta($p_value->ID);
+            foreach ($meta_posts as $m_key => $m_value) {
+                $result[$p_key]->$m_key = $m_value[0];
+            }
+        }
+
+        return $result;
     }
 }
